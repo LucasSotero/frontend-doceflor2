@@ -4,16 +4,18 @@
       fixed
       clipped
       v-model="drawer"
+      class="pink lighten-4"
       app
+      dark
     >
       <v-list dense>
-        <v-list-tile v-for="item in items" :key="item.text" @click="">
+        <v-list-tile v-for="item in items" :key="item.text" @click="redirect(item.action)">
           <v-list-tile-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>
-              {{ item.text }}
+              {{ item.title }}
             </v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
@@ -48,13 +50,18 @@
       drawer: false,
       fixed: false,
       items: [
-        { icon: 'shopping_cart', text: 'Vendas' },
-        { icon: 'person', text: 'Clientes' },
-        { icon: 'shopping_basket', text: 'Produtos' },
-        { icon: 'pie_chart', text: 'Relatórios' }
+        { icon: 'shopping_cart', title: 'Vendas', action: 'sales.show' },
+        { icon: 'person', title: 'Clientes', action: 'clients.show' },
+        { icon: 'shopping_basket', title: 'Produtos', action: 'products.show' },
+        { icon: 'pie_chart', title: 'Relatórios', action: 'reports.show' }
       ]}),
     props: {
       source: String
+    },
+    methods: {
+      redirect (action) {
+        this.$router.push({name: action})
+      }
     }
   }
 </script>
