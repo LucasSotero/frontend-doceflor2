@@ -14,13 +14,13 @@ export default {
   actions: {
     remove (context, id) {
       window.axios.delete('/products/' + id).then(Response => {
-        Response.data = Response.data.data.map(element => Object({ id: element._id, barCode: element.barCode, name: element.name, value: element.value }))
+        Response.data = Response.data.data.map(element => ({ id: element._id, barCode: element.barCode, name: element.name, value: element.value }))
         context.commit('insertAll', Response.data)
       })
     },
     getAll (context) {
       window.axios.get('/products').then(Response => {
-        Response.data = Response.data.data.map(element => Object({ id: element._id, barCode: element.barCode, name: element.name, value: element.value }))
+        Response.data = Response.data.data.map(element => ({ id: element._id, barCode: element.barCode, name: element.name, value: element.value }))
         context.commit('insertAll', Response.data)
       })
     },
@@ -37,13 +37,13 @@ export default {
     },
     post (context, data) {
       window.axios.post('/products/', data).then(Response => {
-        Response.data = Response.data.data.map(element => [element._id, element.barCode, element.name, element.value])
+        Response.data = Response.data.data.map(element => ({ id: element._id, barCode: element.barCode, name: element.name, value: element.value }))
         context.commit('insertAll', Response.data)
       })
     },
     put (context, data) {
       window.axios.put('/products/' + data.id, data).then(Response => {
-        Response.data = Response.data.data.map(element => [element._id, element.barCode, element.name, element.value])
+        Response.data = Response.data.data.map(element => ({ id: element._id, barCode: element.barCode, name: element.name, value: element.value }))
         context.commit('insertAll', Response.data)
       })
     },
