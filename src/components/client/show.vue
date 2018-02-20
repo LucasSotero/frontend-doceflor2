@@ -66,7 +66,7 @@
       dialog: false,
       search: '',
       headers: [
-        { text: 'Nome', align: 'left', value: 'barCode' },
+        { text: 'Nome', align: 'left', value: 'name' },
         { text: 'Ações', value: 'name', sortable: false, align: 'center' }
       ]
     }),
