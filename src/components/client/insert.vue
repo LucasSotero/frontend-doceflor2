@@ -5,12 +5,13 @@
   <v-card>
     <v-form @submit.prevent="submit" ref="form">
       <v-card-title primary-title>
-        <div class="headline">Cadastrar Produto</div>
+        <div class="headline">Cadastrar Cliente</div>
       </v-card-title>   
       <v-container grid-list-xl fluid>
         <v-layout wrap>
           <v-flex xs12 sm12>
                 <v-text-field
+                  ref="name"
                   v-model="form.name"
                   label="Descrição"
                   :error-messages="errors.collect('name')"
@@ -69,13 +70,12 @@
     },
 
     data () {
-      const defaultForm = Object.freeze({
-        name: '',
-        barCode: '',
-        value: null
-      })
       return {
-        form: Object.assign({}, defaultForm),
+        form: {
+          name: '',
+          barcode: '',
+          value: null
+        },
         dictionary: {
           custom: {
             name: {
@@ -104,6 +104,7 @@
 
     mounted () {
       this.$validator.localize('pt', this.dictionary)
+      this.$refs.name.focus()
     },
 
     methods: {
@@ -112,11 +113,14 @@
       },
       submit () {
         this.$validator.validateAll()
+        this.$store.product.dispatch('post', this.form).then(() => {
+          this.$router.push({name: 'products.show'})
+        })
       },
       clear () {
-        this.name = ''
-        this.barCode = ''
-        this.value = null
+        this.form.name = ''
+        this.form.barCode = ''
+        this.form.value = null
         this.$validator.reset()
       }
     }

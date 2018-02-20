@@ -9,7 +9,7 @@
   <v-card>
     <v-form @submit.prevent="submit" ref="form">
       <v-card-title primary-title>
-        <div class="headline">Editar Produto</div>
+        <div class="headline">Alterar Estoque</div>
       </v-card-title>   
       <v-container grid-list-xl fluid>
         <v-layout wrap justify-space-around>
@@ -107,6 +107,19 @@
       </template>
     </v-data-table>
   </div>
+      <v-dialog v-model="dialog2" persistent max-width="350">
+      <v-card>
+        <v-card-title class="headline error white--text" >Excluir</v-card-title>
+        <v-card-text class="text-md-center">
+            Deseja confirmar esta ação?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click="cancelDelete">Cancelar</v-btn>
+          <v-btn color="error" flat @click="confirmDelete">Excluir</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 </v-container>
 </template>
 
@@ -125,11 +138,9 @@
           value: null,
           io: true
         },
-        item: {
-          id: '',
-          name: ''
-        },
-        dialog: true,
+        item: undefined,
+        dialog: false,
+        dialog2: false,
         search: '',
         headers: [
           { text: 'Data', align: 'left', value: 'barCode' },
@@ -190,17 +201,21 @@
 
       deleteItem (item) {
         this.item = item
-        this.dialog = true
+        this.dialog2 = true
       },
 
       confirmDelete () {
-        this.$store.product.dispatch('remove', this.item.id).then(() => {
-          this.dialog = false
+        let data = {
+          id: this.$route.params.id,
+          product: this.item
+        }
+        this.$store.product.dispatch('putDetails', data).then(() => {
+          this.dialog2 = false
         })
       },
 
       cancelDelete () {
-        this.dialog = false
+        this.dialog2 = false
       },
 
       clear () {
@@ -231,7 +246,7 @@
           product: this.form
         }
         this.$store.product.dispatch('postDetails', data).then(() => {
-          console.log('ok')
+          this.dialog = false
         })
       }
 

@@ -2,7 +2,7 @@
 <v-container>
   <div>
     <v-card-title>
-      <v-btn color="success" dark slot="activator" class="mb-2" @click="newItem">Novo</v-btn> 
+      <v-btn color="success" dark slot="activator" class="mb-2"  @click="newItem">Novo</v-btn> 
         <v-spacer></v-spacer>
       <v-text-field
         append-icon="search"
@@ -20,9 +20,11 @@
       :search="search"
     >
       <template slot="items" slot-scope="props">
-        <td class="text-md-center">{{ props.item.name }}</td>
-        <td class="text-xs-center">{{ props.item.credit }}</td>
+        <td class="text-xs-center">{{ props.item.name }}</td>
         <td class="justify-center layout px-0">
+          <v-btn icon class="mx-0" @click="viewItem(props.item)">
+            <v-icon color="blue">subject</v-icon>
+          </v-btn>
           <v-btn icon class="mx-0" @click="editItem(props.item)">
             <v-icon color="teal">edit</v-icon>
           </v-btn>
@@ -35,6 +37,21 @@
         <v-btn color="primary" @click="initialize">Reset</v-btn>
       </template>
     </v-data-table>
+      <v-layout row justify-center>
+    <v-dialog v-model="dialog" persistent max-width="350">
+      <v-card>
+        <v-card-title class="headline error white--text" >Excluir</v-card-title>
+        <v-card-text class="text-md-center">
+            Deseja excluir o produto <b>{{item.name}}</b> ?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click="cancelDelete">Cancelar</v-btn>
+          <v-btn color="error" flat @click="confirmDelete">Excluir</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-layout>
   </div>
 </v-container>
 </template>
@@ -42,83 +59,60 @@
 <script>
   export default {
     data: () => ({
+      item: {
+        id: '',
+        name: ''
+      },
       dialog: false,
       search: '',
       headers: [
-        { text: 'Nome', align: 'left', value: 'name' },
-        { text: 'Crédito', value: 'crédit' },
+        { text: 'Nome', align: 'left', value: 'barCode' },
         { text: 'Ações', value: 'name', sortable: false, align: 'center' }
-      ],
-      items: [],
-      editedIndex: -1,
-      editedItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
-      },
-      defaultItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
-      }
+      ]
     }),
 
     computed: {
-      formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+      items () {
+        return this.$store.client.state.clients
       }
     },
 
-    watch: {
-      dialog (val) {
-        val || this.close()
-      }
-    },
-
-    created () {
+    mounted () {
       this.initialize()
     },
 
     methods: {
       initialize () {
-        this.items = this.$store.product.dispatch('getAll')
+        return this.$store.client.dispatch('getAll')
       },
 
       newItem () {
         this.$router.push({name: 'clients.insert'})
       },
 
+      viewItem (item) {
+        this.$router.push({name: 'clients.details', params: {id: item.id}})
+      },
+
       editItem (item) {
-        this.editedIndex = this.items.indexOf(item)
-        this.editedItem = Object.sassign({}, item)
-        this.dialog = true
+        this.$router.push({name: 'clients.edit', params: {id: item.id}})
       },
 
       deleteItem (item) {
-        const index = this.items.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.items.splice(index, 1)
+        this.item = item
+        this.dialog = true
       },
 
-      close () {
+      confirmDelete () {
+        this.$store.client.dispatch('remove', this.item.id).then(() => {
+          this.dialog = false
+        })
+      },
+
+      cancelDelete () {
         this.dialog = false
-        setTimeout(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        }, 300)
-      },
-
-      save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.items[this.editedIndex], this.editedItem)
-        } else {
-          this.items.push(this.editedItem)
-        }
-        this.close()
       }
+
     }
   }
 </script>

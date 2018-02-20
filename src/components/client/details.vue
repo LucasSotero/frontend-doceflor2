@@ -1,149 +1,255 @@
-<template lang="html">
-<div class="container col-4 col-xl-6 col-md-8 col-sm-10 col-xs-12">
-
-  <h2>v-money <small class="label">Currency mask input for Vue</small></h2>
-
-  <p>
-    <img class="img-responsive centered" src="https://cdn-images-1.medium.com/max/600/1*Rpc289FpghuHrnzyVpOUig.gif" />
-  </p>
-
-  <p class="text-center">
-    <a class="btn" href="https://github.com/vuejs-tips/v-money">https://github.com/vuejs-tips/v-money</a>
-  </p>
-
-  <label>Component</label>
-  <div class="columns">
-    <div class="column col-6 col-sm-12">
-      <money v-model="price" class="form-input input-lg" v-bind="config"></money>
-    </div>
-    <div class="column col-6 col-sm-12">
-      <h3>{{price}}</h3>
-    </div>
+<template>
+<v-container>
+  <div>
+    <v-card-title>
+      <v-btn color="success" dark slot="activator" class="mb-2"  @click="newItem">Novo</v-btn> 
+    </v-card-title>
+    <v-layout row justify-center>
+    <v-dialog v-model="dialog" persistent max-width="450">
+  <v-card>
+    <v-form @submit.prevent="submit" ref="form">
+      <v-card-title primary-title>
+        <div class="headline">Alterar Estoque</div>
+      </v-card-title>   
+      <v-container grid-list-xl fluid>
+        <v-layout wrap justify-space-around>
+          <v-flex xs12 sm8>
+          <v-menu
+        lazy
+        :close-on-content-click="true">
+        <v-text-field
+          required
+          slot="activator"
+          label="Date"
+          v-model="form.date"
+        ></v-text-field>
+        <v-date-picker
+          v-model="form.date"
+          locale="pt-br"
+          no-title
+        >
+        </v-date-picker>
+      </v-menu>
+          </v-flex>
+          <v-flex xs12 sm4>              
+              <span  v-if="form.io">
+                Entrada
+                <v-btn icon class="mx-0" @click="type">
+                  <v-icon x-large color="blue">keyboard_arrow_down</v-icon>
+                </v-btn>                
+              </span>
+              <span  v-if="!form.io">
+                Saida
+                <v-btn icon class="mx-0" @click="type">
+                  <v-icon x-large color="red" >keyboard_arrow_up</v-icon>
+                </v-btn>
+              </span>
+          </v-flex>
+          <v-flex xs12 sm6>
+                <v-text-field
+                  v-model="form.amount"
+                  label="Quantidade"
+                  :error-messages="errors.collect('barCode')"
+                  v-validate="'required'"
+                  data-vv-name="amount"
+                  required
+                ></v-text-field>
+          </v-flex>
+          <v-flex xs12 sm6>
+                <v-text-field name="value"
+                  v-model="form.value"
+                  label="Valor"
+                  :error-messages="errors.collect('value')"
+                  v-validate="'required'"
+                  prefix="$"
+                  data-vv-name="value"
+                  type="number"
+                  required
+                ></v-text-field>
+          </v-flex>
+        </v-layout>
+      </v-container>
+      <v-card-actions>
+        <v-btn
+          flat
+          color="primary"
+          type="submit"
+          :disabled="!isValid"
+        >Salvar</v-btn>
+        <v-btn flat @click="back">Voltar</v-btn>
+        <v-spacer></v-spacer>
+        <v-btn flat  @click="clear" color="error">Cancelar</v-btn>
+      </v-card-actions>
+    </v-form>
+  </v-card>
+    </v-dialog>
+  </v-layout>
+    <v-data-table
+      :headers="headers"
+      :items="items.history"
+      hide-actions
+      class="elevation-1"
+      :search="search"
+    >
+      <template slot="items" slot-scope="props">
+        <td class="text-md-center">{{ props.item.date }}</td>
+        <td class="text-xs-center">{{ props.item.amount }}</td>
+        <td class="text-xs-center">{{ props.item.value }}</td>
+        <td class="text-xs-center">{{ props.item.io }}</td>
+        <td class="justify-center layout px-0">
+          <v-btn icon class="mx-0" @click="deleteItem(props.item)">
+            <v-icon color="pink">delete</v-icon>
+          </v-btn>
+        </td>
+      </template>
+      <template slot="no-data">
+        <v-btn color="primary" @click="initialize">Reset</v-btn>
+      </template>
+    </v-data-table>
   </div>
-
-  <label>Directive</label>
-  <div class="columns">
-    <div class="column col-6 col-sm-12">
-      <input type="tel" v-money="config" v-model.lazy="priceDirective" class="form-input input-lg" style="text-align: right" />
-    </div>
-    <div class="column col-6 col-sm-12">
-      <h3>{{priceDirective}}</h3>
-    </div>
-  </div>
-
-  <label>Directive on Custom Component (TextField from <a href="https://vuetifyjs.com/components/text-fields">vuetify</a>)</label>
-  <div class="columns">
-    <div class="column col-6 col-sm-12">
-      <v-text-field v-money="config" v-model.lazy="priceVuetify"></v-text-field>
-    </div>
-    <div class="column col-6 col-sm-12">
-      <h3>{{priceVuetify}}</h3>
-    </div>
-  </div>
-
-  <div class="columns">
-    <div class="column col-2 col-sm-3">
-      <label class="form-label" for="prefix">Prefix</label>
-    </div>
-    <div class="column col-2 col-sm-3">
-      <input class="form-input" type="text" id="prefix" v-model="config.prefix" />
-    </div>
-
-    <div class="column col-2 col-sm-3">
-      <label class="form-label" for="suffix">Suffix</label>
-    </div>
-    <div class="column col-2 col-sm-3">
-      <input class="form-input" type="text" id="suffix" v-model="config.suffix" />
-    </div>
-
-    <div class="column col-2 col-sm-3">
-      <label class="form-label" for="precision">Precision</label>
-    </div>
-    <div class="column col-2 col-sm-3">
-      <input class="form-input" type="number" id="precision" v-model.number="config.precision" min="0" max="4" />
-    </div>
-
-    <div class="column col-2 col-sm-3">
-      <label class="form-label" for="decimal">Decimal</label>
-    </div>
-    <div class="column col-2 col-sm-3">
-      <input class="form-input" type="text" id="decimal" v-model="config.decimal" />
-    </div>
-    <div class="column col-2 col-sm-3">
-      <label class="form-label" for="thousands">Thousands</label>
-    </div>
-    <div class="column col-2 col-sm-3">
-      <input class="form-input" type="text" id="thousands" v-model="config.thousands" />
-    </div>
-    <div class="column col-4 col-sm-5">
-      <div class="form-group">
-        <label class="form-checkbox">
-          <input type="checkbox" id="masked" v-model="config.masked" />
-          <i class="form-icon"></i> Masked Output
-        </label>
-      </div>
-    </div>
-  </div>
-
-  <hr />
-
-  <h3>Features</h3>
-  <ul>
-    <li>Lightweight (<2KB gzipped)</li>
-    <li>Dependency free</li>
-    <li>Mobile support</li>
-    <li>Component or Directive flavors</li>
-    <li>Accept copy/paste</li>
-    <li>Editable</li>
-  </ul>
-</div>
+      <v-dialog v-model="dialog2" persistent max-width="350">
+      <v-card>
+        <v-card-title class="headline error white--text" >Excluir</v-card-title>
+        <v-card-text class="text-md-center">
+            Deseja confirmar esta ação?
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click="cancelDelete">Cancelar</v-btn>
+          <v-btn color="error" flat @click="confirmDelete">Excluir</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+</v-container>
 </template>
 
 <script>
-export default {
-  data () {
-    return {
-      price: 1234.5,
-      priceDirective: 5432.1,
-      priceVuetify: 6789.10,
-      config: {decimal: ',', thousands: '.', prefix: 'R$ ', suffix: ' #', precision: 2, masked: false}
+  export default {
+    $_veeValidate: {
+      validator: 'new'
+
+    },
+
+    data () {
+      return {
+        form: {
+          date: undefined,
+          amount: null,
+          value: null,
+          io: true
+        },
+        item: undefined,
+        dialog: false,
+        dialog2: false,
+        search: '',
+        headers: [
+          { text: 'Data', align: 'left', value: 'barCode' },
+          { text: 'Quantidade', value: 'name' },
+          { text: 'Valor', value: 'value' },
+          { text: 'Tipo', value: 'value' },
+          { text: 'Ações', value: 'name', sortable: false, align: 'center' }
+        ],
+        dictionary: {
+          custom: {
+            name: {
+              required: () => 'O campo descrição não pode estar vazio'
+            },
+            barCode: {
+              required: () => 'O campo código de barras não pode estar vazio'
+            },
+            value: {
+              required: () => 'O campo valor de venda não pode estar vazio'
+            }
+          }
+        }
+      }
+    },
+
+    computed: {
+      isValid () {
+        return (
+          this.form.date &&
+          this.form.amount &&
+          this.form.value
+        )
+      },
+      items () {
+        return this.$store.product.state.product
+      }
+    },
+
+    mounted () {
+      this.initialize()
+    },
+
+    methods: {
+      initialize () {
+        this.$store.product.dispatch('getDetails', this.$route.params.id)
+      },
+
+      newItem () {
+        this.dialog = true
+      },
+
+      viewItem (item) {
+        this.$router.push({name: 'products.details', params: {id: item.id}})
+      },
+
+      editItem (item) {
+        this.$router.push({name: 'products.edit', params: {id: item.id}})
+      },
+
+      deleteItem (item) {
+        this.item = item
+        this.dialog2 = true
+      },
+
+      confirmDelete () {
+        let data = {
+          id: this.$route.params.id,
+          product: this.item
+        }
+        this.$store.product.dispatch('putDetails', data).then(() => {
+          this.dialog2 = false
+        })
+      },
+
+      cancelDelete () {
+        this.dialog2 = false
+      },
+
+      clear () {
+        this.form.date = ''
+        this.form.value = ''
+        this.form.io = true
+        this.form.amount = null
+        this.$validator.reset()
+      },
+
+      back () {
+        this.form.date = ''
+        this.form.value = ''
+        this.form.io = true
+        this.form.amount = null
+        this.$validator.reset()
+        this.dialog = false
+      },
+
+      type () {
+        this.form.io = !this.form.io
+      },
+
+      submit () {
+        this.$validator.validateAll()
+        let data = {
+          id: this.$route.params.id,
+          product: this.form
+        }
+        this.$store.product.dispatch('postDetails', data).then(() => {
+          this.dialog = false
+        })
+      }
+
     }
   }
-}
 </script>
-
-<style lang="css">
-@import url('https://cdnjs.cloudflare.com/ajax/libs/spectre.css/0.2.14/spectre.min.css');
-.v-money {
-  text-align: right;
-}
-input {
-  font-family: monospace;
-  font-size: 1.8rem !important;
-}
-body {
-  background-color: #eee;
-}
-.container {
-  background-color: white;
-  border-radius: 4px;
-  margin-top: 20px;
-  -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
-  -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
-  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.25);
-}
-figure {
-  text-align: center;
-  padding-top: 10px;
-}
-figure img {
-  width: 100%;
-  border: 2px solid black;
-}
-.input-group__input {
-  width: 100%;
-}
-.input-group__input input {
-  width: 100%;
-}
-</style>

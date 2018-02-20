@@ -56,9 +56,7 @@
   export default {
     $_veeValidate: {
       validator: 'new'
-
     },
-
     data () {
       return {
         dictionary: {
@@ -76,7 +74,6 @@
         }
       }
     },
-
     computed: {
       isValid () {
         return (
@@ -89,16 +86,13 @@
         return this.$store.product.state.product
       }
     },
-
     created () {
       this.$store.product.dispatch('getOne', this.$route.params.id)
     },
-
     mounted () {
       this.$validator.localize('pt', this.dictionary)
       this.$refs.name.focus()
     },
-
     methods: {
       back () {
         this.$router.push({name: 'products.show'})
