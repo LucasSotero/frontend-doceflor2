@@ -5,32 +5,61 @@
   <v-card>
     <v-form @submit.prevent="submit" ref="form">
       <v-card-title primary-title>
-        <div class="headline">Editar Cliente</div>
-      </v-card-title>   
+        <div class="headline">Cadastrar Cliente</div>
+      </v-card-title>
       <v-container grid-list-xl fluid>
         <v-layout wrap>
           <v-flex xs12 sm12>
                 <v-text-field
-                  ref="name"
+                  class="input-group--focused"
                   v-model="form.name"
-                  label="Descrição"
+                  label="Nome"
                   :error-messages="errors.collect('name')"
                   v-validate="'required'"
                   data-vv-name="name"
                   required
                 ></v-text-field>
           </v-flex>
-          <v-flex xs12 sm6>
-                <v-text-field name="value"
-                  v-model="form.value"
-                  label="Valor de Venda"
-                  :error-messages="errors.collect('value')"
-                  v-validate="'required'"
-                  prefix="$"
-                  data-vv-name="value"
-                  type="number"
+          <v-flex xs12 sm6  v-for="(index, teste) in form.phone" :key="index">
+                <v-text-field
+                  v-model="form.phone[teste]"
+                  :label="'Fone ' + index"
+                  :error-messages="errors.collect('phone1')"
+                  v-validate="'numeric|min:10'"
+                  :data-vv-name="'phone' + teste"
+                  :mask="mask[teste]"
                   required
-                ></v-text-field>
+                >
+                <div slot="label">
+                Fone 1 <small>(opcional)</small>
+                </div>
+                </v-text-field>
+          </v-flex>
+          <v-flex xs12 sm12>
+                <v-text-field
+                  v-model="form.address"
+                  :error-messages="errors.collect('adress')"
+                  data-vv-name="adress"
+                  required
+                >
+                <div slot="label">
+                Endereço <small>(opcional)</small>
+                </div>
+                </v-text-field>
+          </v-flex>
+          <v-flex xs12 sm12>
+                <v-text-field name="value"
+                  v-model="form.complement"
+                  multi-line
+                  :error-messages="errors.collect('comments')"
+                  data-vv-name="value"
+                  type="text"
+                  required
+                >
+                <div slot="label">
+                Observações <small>(opcional)</small>
+                </div>
+                </v-text-field>
           </v-flex>
         </v-layout>
       </v-container>
@@ -59,16 +88,17 @@
     },
     data () {
       return {
+        mask: ['', ''],
         dictionary: {
           custom: {
             name: {
-              required: () => 'O campo descrição não pode estar vazio'
+              required: () => 'O campo Nome não pode estar vazio'
             },
-            barCode: {
-              required: () => 'O campo código de barras não pode estar vazio'
+            phone1: {
+              min: 'o número de telefone não é um campo válido'
             },
-            value: {
-              required: () => 'O campo valor de venda não pode estar vazio'
+            phone2: {
+              min: 'o número de telefone não é um campo válido'
             }
           }
         }
@@ -83,30 +113,32 @@
         )
       },
       form () {
-        return this.$store.product.state.product
+        return this.$store.client.state.client
       }
     },
     created () {
-      this.$store.product.dispatch('getOne', this.$route.params.id)
+      this.$store.client.dispatch('getOne', this.$route.params.id)
     },
     mounted () {
       this.$validator.localize('pt', this.dictionary)
-      this.$refs.name.focus()
+      console.log(this.form)
     },
     methods: {
       back () {
-        this.$router.push({name: 'products.show'})
+        this.$router.push({name: 'clients.show'})
       },
       submit () {
         this.$validator.validateAll()
-        this.$store.product.dispatch('put', this.form).then(() => {
-          this.$router.push({name: 'products.show'})
+        this.$store.client.dispatch('put', this.form).then(() => {
+          this.$router.push({name: 'clients.show'})
         })
       },
       clear () {
         this.form.name = ''
-        this.form.barCode = ''
-        this.form.value = null
+        this.form.phone[0] = ''
+        this.form.phone[1] = ''
+        this.form.address = ''
+        this.form.complement = ''
         this.$validator.reset()
       }
     }

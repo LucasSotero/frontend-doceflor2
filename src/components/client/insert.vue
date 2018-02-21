@@ -6,7 +6,7 @@
     <v-form @submit.prevent="submit" ref="form">
       <v-card-title primary-title>
         <div class="headline">Cadastrar Cliente</div>
-      </v-card-title>   
+      </v-card-title>
       <v-container grid-list-xl fluid>
         <v-layout wrap>
           <v-flex xs12 sm12>
@@ -14,7 +14,7 @@
                   ref="name"
                   v-model="form.name"
                   label="Nome"
-                  :error-messages="errors.collect('phone')"
+                  :error-messages="errors.collect('name')"
                   v-validate="'required'"
                   data-vv-name="name"
                   required
@@ -24,9 +24,9 @@
                 <v-text-field
                   v-model="form.phone[0]"
                   label="Fone 1"
-                  :error-messages="errors.collect('phone')"
-                  v-validate="'numeric'"
-                  data-vv-name="phone"
+                  :error-messages="errors.collect('phone1')"
+                  v-validate="'numeric|min:10'"
+                  data-vv-name="phone1"
                   :mask=mask1
                   required
                 >
@@ -38,8 +38,8 @@
           <v-flex xs12 sm6>
                 <v-text-field
                   v-model="form.phone[1]"
-                  :error-messages="errors.collect('name')"
-                  v-validate="'numeric'"
+                  :error-messages="errors.collect('phone2')"
+                  v-validate="'numeric|min:10'"
                   data-vv-name="phone2"
                   :mask=mask2
                   required
@@ -51,11 +51,11 @@
           </v-flex>
           <v-flex xs12 sm12>
                 <v-text-field
-                  v-model="form.adress"
+                  v-model="form.address"
                   :error-messages="errors.collect('adress')"
                   data-vv-name="adress"
                   required
-                >                
+                >
                 <div slot="label">
                 Endereço <small>(opcional)</small>
                 </div>
@@ -63,8 +63,8 @@
           </v-flex>
           <v-flex xs12 sm12>
                 <v-text-field name="value"
-                  v-model="form.comment"
-                  multi-line                
+                  v-model="form.complement"
+                  multi-line
                   :error-messages="errors.collect('comments')"
                   data-vv-name="value"
                   type="text"
@@ -113,13 +113,13 @@
         dictionary: {
           custom: {
             name: {
-              required: () => 'O campo descrição não pode estar vazio'
+              required: () => 'O campo Nome não pode estar vazio'
             },
-            barCode: {
-              required: () => 'O campo código de barras não pode estar vazio'
+            phone1: {
+              min: 'o número de telefone não é um campo válido'
             },
-            value: {
-              required: () => 'O campo valor de venda não pode estar vazio'
+            phone2: {
+              min: 'o número de telefone não é um campo válido'
             }
           }
         }

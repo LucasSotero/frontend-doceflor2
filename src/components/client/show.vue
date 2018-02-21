@@ -2,7 +2,7 @@
 <v-container>
   <div>
     <v-card-title>
-      <v-btn color="success" dark slot="activator" class="mb-2"  @click="newItem">Novo</v-btn> 
+      <v-btn color="success" dark slot="activator" class="mb-2"  @click="newItem">Novo</v-btn>
         <v-spacer></v-spacer>
       <v-text-field
         append-icon="search"
@@ -104,7 +104,7 @@
       },
 
       confirmDelete () {
-        this.$store.client.dispatch('remove', this.item.id).then(() => {
+        this.$store.client.dispatch('delete', this.item.id).then(() => {
           this.dialog = false
         })
       },

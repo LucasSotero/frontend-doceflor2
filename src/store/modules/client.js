@@ -27,7 +27,7 @@ export default {
         let result = {
           id: Response.data.data._id,
           name: Response.data.data.name,
-          phones: Response.data.data.phones,
+          phone: Response.data.data.phone,
           address: Response.data.data.address,
           complement: Response.data.data.complement
         }
