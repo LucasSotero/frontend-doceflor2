@@ -52,8 +52,8 @@
           <v-flex xs12 sm12>
                 <v-text-field
                   v-model="form.address"
-                  :error-messages="errors.collect('adress')"
-                  data-vv-name="adress"
+                  :error-messages="errors.collect('address')"
+                  data-vv-name="address"
                   required
                 >
                 <div slot="label">
@@ -104,12 +104,6 @@
 
     data () {
       return {
-        form: {
-          name: '',
-          phone: ['', ''],
-          adress: '',
-          comment: ''
-        },
         dictionary: {
           custom: {
             name: {
@@ -166,7 +160,7 @@
         this.form.name = ''
         this.form.phone[0] = ''
         this.form.phone[1] = ''
-        this.form.adress = ''
+        this.form.address = ''
         this.form.comment = ''
         this.$validator.reset()
       }

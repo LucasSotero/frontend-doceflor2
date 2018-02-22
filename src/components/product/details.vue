@@ -143,11 +143,11 @@
         dialog2: false,
         search: '',
         headers: [
-          { text: 'Data', align: 'left', value: 'barCode' },
-          { text: 'Quantidade', value: 'name' },
+          { text: 'Data', align: 'left', value: 'date' },
+          { text: 'Quantidade', value: 'amount' },
           { text: 'Valor', value: 'value' },
-          { text: 'Tipo', value: 'value' },
-          { text: 'Ações', value: 'name', sortable: false, align: 'center' }
+          { text: 'Tipo', value: 'io' },
+          { text: 'Ações', value: 'actions', sortable: false, align: 'center' }
         ],
         dictionary: {
           custom: {

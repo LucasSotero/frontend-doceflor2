@@ -46,14 +46,13 @@
               </span>
           </v-flex>
           <v-flex xs12 sm6>
-                <v-text-field
-                  v-model="form.amount"
-                  label="Quantidade"
-                  :error-messages="errors.collect('barCode')"
-                  v-validate="'required'"
-                  data-vv-name="amount"
-                  required
-                ></v-text-field>
+        <v-select
+          :items="methods"
+          v-model="form.method"
+          label="Método"
+          single-line
+          bottom
+        ></v-select>
           </v-flex>
           <v-flex xs12 sm6>
                 <v-text-field name="value"
@@ -132,19 +131,23 @@
 
     data () {
       return {
+        methods: [
+          'Dinheiro',
+          'Cartão',
+          'Fiado'
+        ],
         form: {
           date: undefined,
-          amount: null,
+          method: '',
           value: null,
-          io: true
+          io: false
         },
         item: undefined,
         dialog: false,
         dialog2: false,
         search: '',
         headers: [
-          { text: 'Data', align: 'left', value: 'barCode' },
-          { text: 'Quantidade', value: 'name' },
+          { text: 'Data', align: 'left', value: 'date' },
           { text: 'Valor', value: 'value' },
           { text: 'Tipo', value: 'value' },
           { text: 'Ações', value: 'name', sortable: false, align: 'center' }
@@ -169,12 +172,12 @@
       isValid () {
         return (
           this.form.date &&
-          this.form.amount &&
+          this.form.method &&
           this.form.value
         )
       },
       items () {
-        return this.$store.product.state.product
+        return this.$store.client.state.client
       }
     },
 
@@ -184,7 +187,7 @@
 
     methods: {
       initialize () {
-        this.$store.product.dispatch('getDetails', this.$route.params.id)
+        this.$store.client.dispatch('getDetails', this.$route.params.id)
       },
 
       newItem () {
@@ -192,11 +195,11 @@
       },
 
       viewItem (item) {
-        this.$router.push({name: 'products.details', params: {id: item.id}})
+        this.$router.push({name: 'clients.details', params: {id: item.id}})
       },
 
       editItem (item) {
-        this.$router.push({name: 'products.edit', params: {id: item.id}})
+        this.$router.push({name: 'clients.edit', params: {id: item.id}})
       },
 
       deleteItem (item) {
@@ -207,9 +210,9 @@
       confirmDelete () {
         let data = {
           id: this.$route.params.id,
-          product: this.item
+          client: this.item
         }
-        this.$store.product.dispatch('putDetails', data).then(() => {
+        this.$store.client.dispatch('putDetails', data).then(() => {
           this.dialog2 = false
         })
       },
@@ -243,9 +246,9 @@
         this.$validator.validateAll()
         let data = {
           id: this.$route.params.id,
-          product: this.form
+          client: this.form
         }
-        this.$store.product.dispatch('postDetails', data).then(() => {
+        this.$store.client.dispatch('postDetails', data).then(() => {
           this.dialog = false
         })
       }

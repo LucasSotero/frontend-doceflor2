@@ -16,10 +16,16 @@ import ClientEdit from '@/components/client/edit'
 import ClientInsert from '@/components/client/insert'
 import ClientDetails from '@/components/client/details'
 
+import pdv from '@/components/pdv/pdv'
+
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/pdv',
+      component: pdv
+    },
     {
       path: '/products',
       name: 'products.show',

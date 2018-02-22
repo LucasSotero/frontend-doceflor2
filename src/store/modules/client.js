@@ -58,6 +58,33 @@ export default {
         Response.data = Response.data.data.map(element => ({id: element._id, data: element.data, code: element.code, value: element.value}))
         context.commit('insertSales', Response.data)
       })
+    },
+    getDetails (context, data) {
+      window.axios.get('/clients/details/' + data).then(Response => {
+        let result = {
+          id: Response.data.data._id,
+          credits: Response.data.data.credits
+        }
+        context.commit('updateOne', result)
+      })
+    },
+    postDetails (context, data) {
+      window.axios.post('/clients/details/' + data.id, {credits: data.client}).then(Response => {
+        let result = {
+          id: Response.data.data._id,
+          credits: Response.data.data.credits
+        }
+        context.commit('updateOne', result)
+      })
+    },
+    putDetails (context, data) {
+      window.axios.put('/clients/details/' + data.id, {credits: data.client}).then(Response => {
+        let result = {
+          id: Response.data.data._id,
+          credits: Response.data.data.credits
+        }
+        context.commit('updateOne', result)
+      })
     }
 
   }

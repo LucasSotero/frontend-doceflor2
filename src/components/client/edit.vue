@@ -107,9 +107,7 @@
     computed: {
       isValid () {
         return (
-          this.form.name &&
-          this.form.barCode &&
-          this.form.value
+          this.form.name
         )
       },
       form () {

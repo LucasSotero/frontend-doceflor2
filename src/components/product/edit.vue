@@ -5,7 +5,7 @@
   <v-card>
     <v-form @submit.prevent="submit" ref="form">
       <v-card-title primary-title>
-        <div class="headline">Editar Produto</div>
+        <div class="headline">Cadastrar Produto</div>
       </v-card-title>   
       <v-container grid-list-xl fluid>
         <v-layout wrap>
@@ -17,6 +17,16 @@
                   :error-messages="errors.collect('name')"
                   v-validate="'required'"
                   data-vv-name="name"
+                  required
+                ></v-text-field>
+          </v-flex>
+          <v-flex xs12 sm6>
+                <v-text-field
+                  v-model="form.barCode"
+                  label="Código de Barras"
+                  :error-messages="errors.collect('barCode')"
+                  v-validate="'required'"
+                  data-vv-name="barCode"
                   required
                 ></v-text-field>
           </v-flex>
@@ -51,7 +61,6 @@
   </v-layout>
   </v-container>
 </template>
-
 <script>
   export default {
     $_veeValidate: {
