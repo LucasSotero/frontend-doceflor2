@@ -247,6 +247,11 @@
         }
         this.$store.product.dispatch('postDetails', data).then(() => {
           this.dialog = false
+          this.form.date = ''
+          this.form.value = ''
+          this.form.io = true
+          this.form.amount = null
+          this.$validator.reset()
         })
       }
 

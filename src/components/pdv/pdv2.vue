@@ -70,47 +70,50 @@
       <v-card-title primary-title>
         <div class="headline">Desconto</div>
         <v-spacer></v-spacer>
-        <div>{{productDiscount.name}}</div>
+              <v-flex xs12 sm5>
+        <v-select
+          v-model="typediscount"
+          :items="teste"
+          label="Select"
+          overflow
+          target="#dropdown-example"
+        ></v-select>
+      </v-flex>
       </v-card-title>   
       <v-container grid-list-xl fluid>
         <v-layout wrap justify-space-around>
           <v-flex xs12 sm3>
-                <v-text-field name="value" disabled
-                 v-model="productDiscount.value"
+                <v-text-field name="value"
+                  label="Valor"
+                  :error-messages="errors.collect('value')"
+                  v-validate="'required'"
                   prefix="$"
                   data-vv-name="value"
                   type="number"
                   required
-                >                
-                <div slot="label">
-                Valor
-                </div></v-text-field>
+                ></v-text-field>
           </v-flex>
           <v-flex xs12 sm3>
                 <v-text-field name="value"
-                  v-model="productDiscount.percent"
+                  label="Valor"
                   :error-messages="errors.collect('value')"
-                  suffix="%"
-                  data-vv-name="value"
-                  type="text"
-                  required
-                >            
-                <div slot="label">
-                Valor
-                </div></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm3>
-                <v-text-field name="value"
-                  v-model="productDiscountTotal"
-                  :error-messages="errors.collect('value')"
+                  v-validate="'required'"
                   prefix="$"
                   data-vv-name="value"
                   type="number"
                   required
-                >                            
-                <div slot="label">
-                Valor
-                </div></v-text-field>
+                ></v-text-field>
+          </v-flex>
+          <v-flex xs12 sm3>
+                <v-text-field name="value"
+                  label="Valor"
+                  :error-messages="errors.collect('value')"
+                  v-validate="'required'"
+                  prefix="$"
+                  data-vv-name="value"
+                  type="number"
+                  required
+                ></v-text-field>
           </v-flex>
         </v-layout>
       </v-container>
@@ -151,15 +154,12 @@
 <script>
   export default {
     data: () => ({
+      teste: ['Porcentagem', 'Valor'],
       item: {
         id: '',
         name: ''
       },
-      productDiscount: {
-        name: '',
-        value: null,
-        percent: null
-      },
+      typediscount: 'Porcentagem',
       dialog3: false,
       dialog: false,
       search: '',
@@ -193,9 +193,6 @@
           sum += element[3]
         })
         return sum
-      },
-      productDiscountTotal () {
-        return this.productDiscount.value - (this.productDiscount.value * (this.productDiscount.percent / 100))
       }
     },
 
@@ -213,8 +210,6 @@
       },
 
       dicountItem (item) {
-        this.productDiscount.name = item.name
-        this.productDiscount.value = item.value
         this.dialog3 = true
       },
 

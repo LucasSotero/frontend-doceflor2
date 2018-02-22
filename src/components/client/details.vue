@@ -85,14 +85,13 @@
   </v-layout>
     <v-data-table
       :headers="headers"
-      :items="items.history"
+      :items="items.credits"
       hide-actions
       class="elevation-1"
       :search="search"
     >
       <template slot="items" slot-scope="props">
         <td class="text-md-center">{{ props.item.date }}</td>
-        <td class="text-xs-center">{{ props.item.amount }}</td>
         <td class="text-xs-center">{{ props.item.value }}</td>
         <td class="text-xs-center">{{ props.item.io }}</td>
         <td class="justify-center layout px-0">
@@ -149,8 +148,8 @@
         headers: [
           { text: 'Data', align: 'left', value: 'date' },
           { text: 'Valor', value: 'value' },
-          { text: 'Tipo', value: 'value' },
-          { text: 'Ações', value: 'name', sortable: false, align: 'center' }
+          { text: 'Tipo', value: 'io' },
+          { text: 'Ações', value: 'actions', sortable: false, align: 'center' }
         ],
         dictionary: {
           custom: {
@@ -225,7 +224,7 @@
         this.form.date = ''
         this.form.value = ''
         this.form.io = true
-        this.form.amount = null
+        this.form.method = undefined
         this.$validator.reset()
       },
 
@@ -233,7 +232,7 @@
         this.form.date = ''
         this.form.value = ''
         this.form.io = true
-        this.form.amount = null
+        this.form.method = undefined
         this.$validator.reset()
         this.dialog = false
       },
@@ -241,7 +240,6 @@
       type () {
         this.form.io = !this.form.io
       },
-
       submit () {
         this.$validator.validateAll()
         let data = {
@@ -249,6 +247,11 @@
           client: this.form
         }
         this.$store.client.dispatch('postDetails', data).then(() => {
+          this.form.date = ''
+          this.form.value = ''
+          this.form.io = true
+          this.form.method = undefined
+          this.$validator.reset()
           this.dialog = false
         })
       }

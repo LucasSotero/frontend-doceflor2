@@ -11,7 +11,7 @@
         <v-layout wrap>
           <v-flex xs12 sm12>
                 <v-text-field
-                  ref="name"
+                  class="input-group--focused"
                   v-model="form.name"
                   label="Nome"
                   :error-messages="errors.collect('name')"
@@ -20,14 +20,14 @@
                   required
                 ></v-text-field>
           </v-flex>
-          <v-flex xs12 sm6>
+          <v-flex xs12 sm6  v-for="(index, teste) in form.phone" :key="index">
                 <v-text-field
-                  v-model="form.phone[0]"
-                  label="Fone 1"
+                  v-model="form.phone[teste]"
+                  :label="'Fone ' + index"
                   :error-messages="errors.collect('phone1')"
                   v-validate="'numeric|min:10'"
-                  data-vv-name="phone1"
-                  :mask=mask1
+                  :data-vv-name="'phone' + teste"
+                  :mask="mask[teste]"
                   required
                 >
                 <div slot="label">
@@ -35,25 +35,11 @@
                 </div>
                 </v-text-field>
           </v-flex>
-          <v-flex xs12 sm6>
-                <v-text-field
-                  v-model="form.phone[1]"
-                  :error-messages="errors.collect('phone2')"
-                  v-validate="'numeric|min:10'"
-                  data-vv-name="phone2"
-                  :mask=mask2
-                  required
-                >
-                <div slot="label">
-                Fone 2 <small>(opcional)</small>
-                </div>
-                </v-text-field>
-          </v-flex>
           <v-flex xs12 sm12>
                 <v-text-field
                   v-model="form.address"
-                  :error-messages="errors.collect('address')"
-                  data-vv-name="address"
+                  :error-messages="errors.collect('adress')"
+                  data-vv-name="adress"
                   required
                 >
                 <div slot="label">
@@ -99,17 +85,10 @@
   export default {
     $_veeValidate: {
       validator: 'new'
-
     },
-
     data () {
       return {
-        form: {
-          name: '',
-          phone: ['', ''],
-          address: '',
-          complement: ''
-        },
+        mask: ['', ''],
         dictionary: {
           custom: {
             name: {
@@ -125,40 +104,30 @@
         }
       }
     },
-
     computed: {
       isValid () {
         return (
           this.form.name
         )
       },
-      mask1 () {
-        if (this.form.phone[0].length < 11) {
-          return '(##) ####-#####'
-        }
-        return '(##) # ####-####'
-      },
-
-      mask2 () {
-        if (this.form.phone[1].length < 11) {
-          return '(##) ####-#####'
-        }
-        return '(##) # ####-####'
+      form () {
+        return this.$store.client.state.client
       }
     },
-
+    created () {
+      this.$store.client.dispatch('getOne', this.$route.params.id)
+    },
     mounted () {
       this.$validator.localize('pt', this.dictionary)
-      this.$refs.name.focus()
+      console.log(this.form)
     },
-
     methods: {
       back () {
         this.$router.push({name: 'clients.show'})
       },
       submit () {
         this.$validator.validateAll()
-        this.$store.client.dispatch('post', this.form).then(() => {
+        this.$store.client.dispatch('put', this.form).then(() => {
           this.$router.push({name: 'clients.show'})
         })
       },
