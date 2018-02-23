@@ -4,7 +4,7 @@
   <v-flex xs12 sm12>
     <v-card>
       <v-card-title>
-        <v-flex sm4>
+        <v-flex sm4 v-if="table">
         <v-text-field
           append-icon="search"
           label="Código de Barras..."
@@ -18,7 +18,7 @@
       </v-card>
     </v-flex>
     <v-flex xs6 sm9>
-    <v-data-table
+    <v-data-table v-if="table"
       :headers="headers"
       :items="items"
       hide-actions
@@ -41,6 +41,7 @@
         <v-btn color="primary" @click="initialize">Reset</v-btn>
       </template>
     </v-data-table>
+    <pay v-else></pay>
     </v-flex>
     <v-flex xs6 sm3>
       <v-layout row>
@@ -61,7 +62,7 @@
         </v-card>
         </v-flex>
         </v-layout>
-         <v-btn block color="primary" large dark>PAGAMENTO</v-btn>
+         <v-btn block color="primary" large dark @click.prevent="payment">PAGAMENTO</v-btn>
     </v-flex>
 </v-layout>
 <v-layout row justify-center>
@@ -150,7 +151,9 @@
 
 
 <script>
+  import pay from '@/components/pdv/pay'
   export default {
+    components: {pay},
     data: () => ({
       result: [
         {text: 'Total', value: 0},
@@ -160,6 +163,7 @@
         id: '',
         name: ''
       },
+      table: true,
       productDiscount: {
         name: '',
         value: null,
@@ -257,6 +261,9 @@
       addProduct: function () {
         this.$store.pdv.dispatch('getOne', this.search)
         this.search = ''
+      },
+      payment () {
+        this.table = !this.table
       }
     }
   }
