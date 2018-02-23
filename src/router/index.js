@@ -17,6 +17,7 @@ import ClientInsert from '@/components/client/insert'
 import ClientDetails from '@/components/client/details'
 
 import pdv from '@/components/pdv/pdv'
+import pay from '@/components/pdv/pay'
 
 Vue.use(Router)
 
@@ -25,6 +26,10 @@ export default new Router({
     {
       path: '/',
       component: pdv
+    },
+    {
+      path: '/pay',
+      component: pay
     },
     {
       path: '/products',

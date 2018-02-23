@@ -4,6 +4,7 @@
   <v-flex xs12 sm12>
     <v-card>
       <v-card-title>
+        <v-flex sm4>
         <v-text-field
           append-icon="search"
           label="Código de Barras..."
@@ -12,7 +13,7 @@
           v-model="search"
           @keyup.enter="addProduct"
         ></v-text-field>
-        <v-spacer></v-spacer>
+          </v-flex>
         </v-card-title>
       </v-card>
     </v-flex>
@@ -180,19 +181,14 @@
 
     computed: {
       items2 () {
-        let sumDiscount = 0
-        let sumtotal = 0
+        this.result[0].value = 0
+        this.result[1].value = 0
         this.$store.pdv.state.products.forEach(element => {
-          sumDiscount += element.discount
+          this.result[1].value += element.discount
         })
-        if (!sumDiscount) {
-          sumDiscount = 0
-        }
         this.$store.pdv.state.products.forEach(element => {
-          sumtotal += element.value
+          this.result[0].value += element.value
         })
-        this.result[0].value = sumtotal
-        this.result[1].value = sumDiscount
         return this.result
       },
       items () {
@@ -250,6 +246,8 @@
         }
         this.$store.pdv.commit('addDiscount', data)
         this.dialog3 = false
+        this.productDiscount.total = null
+        this.productDiscount.percent = null
       },
       clear () {
         this.dialog3 = false
