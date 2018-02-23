@@ -12,12 +12,15 @@ export default {
     },
     updateValue (state, data) {
       state.products[data.key] = data.data
+    },
+    addDiscount (state, data) {
+      state.products[data.index].discount = data.discount
     }
   },
   actions: {
     getOne (context, data) {
       window.axios.get('/products/search/' + data).then(Response => {
-        Response.data = [Response.data.data.barCode, Response.data.data.name, Response.data.data.value]
+        Response.data = ({name: Response.data.data.name, value: Response.data.data.value})
         context.commit('updateOne', Response.data)
       })
     }

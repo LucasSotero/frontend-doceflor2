@@ -10,13 +10,14 @@
           single-line
           hide-details
           v-model="search"
+          @keyup.enter="addProduct"
         ></v-text-field>
         <v-spacer></v-spacer>
         </v-card-title>
       </v-card>
     </v-flex>
     <v-flex xs6 sm9>
-          <v-data-table
+    <v-data-table
       :headers="headers"
       :items="items"
       hide-actions
@@ -26,7 +27,7 @@
         <td class="text-xs-center">{{ props.item.value }}</td>
         <td class="text-xs-center">{{ props.item.discount }}</td>
         <td class="right layout px-0">
-          <v-btn icon class="mx-0" @click="dicountItem(props.item)">
+          <v-btn icon class="mx-0" @click="dicountItem(props.item, props.index)">
             <v-icon color="blue">loyalty</v-icon>
           </v-btn>
           <v-btn icon class="mx-0" @click="deleteItem(props.item)">
@@ -47,13 +48,12 @@
           <v-list one-line>
             <template v-for="(item) in items2">
               <v-list-tile :key="item.title">
-                <v-list-tile-content>
-                  <v-list v-html="item.title"></v-list>
-                </v-list-tile-content>
-                <v-spacer></v-spacer>
-                <v-list-tile-content>
-                  <v-list v-html="item.total"></v-list>
-                </v-list-tile-content>
+              <v-list-tile-content>
+                <v-list-tile-title v-html="item.text"></v-list-tile-title>
+              </v-list-tile-content>
+              <v-list-tile-action>
+                <v-list-tile-title v-html="item.value"></v-list-tile-title>
+              </v-list-tile-action>
               </v-list-tile>
             </template>
           </v-list>
@@ -92,8 +92,9 @@
                   :error-messages="errors.collect('value')"
                   suffix="%"
                   data-vv-name="value"
-                  type="text"
+                  type="number"
                   required
+                  @input="discountPercent"
                 >            
                 <div slot="label">
                 Valor
@@ -101,12 +102,13 @@
           </v-flex>
           <v-flex xs12 sm3>
                 <v-text-field name="value"
-                  v-model="productDiscountTotal"
+                  v-model="productDiscount.total"
                   :error-messages="errors.collect('value')"
                   prefix="$"
                   data-vv-name="value"
                   type="number"
                   required
+                  @input="discountValue"
                 >                            
                 <div slot="label">
                 Valor
@@ -119,9 +121,7 @@
           flat
           color="primary"
           type="submit"
-          :disabled="!isValid"
         >Salvar</v-btn>
-        <v-btn flat @click="back">Voltar</v-btn>
         <v-spacer></v-spacer>
         <v-btn flat  @click="clear" color="error">Cancelar</v-btn>
       </v-card-actions>
@@ -151,6 +151,10 @@
 <script>
   export default {
     data: () => ({
+      result: [
+        {text: 'Total', value: 0},
+        {text: 'Desconto', value: 0}
+      ],
       item: {
         id: '',
         name: ''
@@ -158,7 +162,9 @@
       productDiscount: {
         name: '',
         value: null,
-        percent: null
+        percent: null,
+        total: null,
+        index: null
       },
       dialog3: false,
       dialog: false,
@@ -169,30 +175,28 @@
         { text: 'Desconto', value: 'Discount', sortable: false, align: 'center' },
         { text: 'Ações', value: 'actions', sortable: false, align: 'right' },
         { text: '', value: '', sortable: false, align: 'right' }
-      ],
-      items2: [
-        {title: 'Total'},
-        {title: 'Desconto'}
       ]
     }),
 
     computed: {
+      items2 () {
+        let sumDiscount = 0
+        let sumtotal = 0
+        this.$store.pdv.state.products.forEach(element => {
+          sumDiscount += element.discount
+        })
+        if (!sumDiscount) {
+          sumDiscount = 0
+        }
+        this.$store.pdv.state.products.forEach(element => {
+          sumtotal += element.value
+        })
+        this.result[0].value = sumtotal
+        this.result[1].value = sumDiscount
+        return this.result
+      },
       items () {
-        return this.$store.product.state.products
-      },
-      total: function () {
-        let sum = 0
-        this.$store.pdv.state.products.forEach(element => {
-          sum += element[2]
-        })
-        return sum
-      },
-      discount: function () {
-        let sum = 0
-        this.$store.pdv.state.products.forEach(element => {
-          sum += element[3]
-        })
-        return sum
+        return this.$store.pdv.state.products
       },
       productDiscountTotal () {
         return this.productDiscount.value - (this.productDiscount.value * (this.productDiscount.percent / 100))
@@ -208,18 +212,11 @@
         return this.$store.product.dispatch('getAll')
       },
 
-      newItem () {
-        this.$router.push({name: 'clients.insert'})
-      },
-
-      dicountItem (item) {
+      dicountItem (item, index) {
         this.productDiscount.name = item.name
         this.productDiscount.value = item.value
+        this.productDiscount.index = index
         this.dialog3 = true
-      },
-
-      editItem (item) {
-        this.$router.push({name: 'clients.edit', params: {id: item.id}})
       },
 
       deleteItem (item) {
@@ -228,15 +225,41 @@
       },
 
       confirmDelete () {
-        this.$store.client.dispatch('delete', this.item.id).then(() => {
-          this.dialog = false
-        })
+        this.$store.pdv.commit('removeOne', this.item)
+        this.dialog = false
       },
 
       cancelDelete () {
-        this.dialog = false
-      }
+        this.dialog3 = false
+      },
+      discountPercent () {
+        this.productDiscount.total = this.productDiscount.value - (this.productDiscount.value * this.productDiscount.percent / 100)
+      },
 
+      discountValue () {
+        this.productDiscount.percent = (this.productDiscount.total * 100 / this.productDiscount.value) - 100
+        if (this.productDiscount.percent < 0) {
+          this.productDiscount.percent = this.productDiscount.percent / -1
+        }
+      },
+
+      submit () {
+        let data = {
+          index: this.productDiscount.index,
+          discount: this.productDiscount.total
+        }
+        this.$store.pdv.commit('addDiscount', data)
+        this.dialog3 = false
+      },
+      clear () {
+        this.dialog3 = false
+        this.productDiscount.total = null
+        this.productDiscount.percent = null
+      },
+      addProduct: function () {
+        this.$store.pdv.dispatch('getOne', this.search)
+        this.search = ''
+      }
     }
   }
 </script>
