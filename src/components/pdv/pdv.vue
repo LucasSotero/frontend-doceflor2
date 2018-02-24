@@ -14,6 +14,17 @@
           @keyup.enter="addProduct"
         ></v-text-field>
           </v-flex>
+          <v-spacer></v-spacer>
+        <v-flex  sm4>
+        <v-text-field
+          label="Cliente"
+          single-line
+          hide-details
+          v-model="search"
+          @keyup.enter="addProduct"
+        ></v-text-field>
+          </v-flex>
+
         </v-card-title>
       </v-card>
     </v-flex>
@@ -62,7 +73,18 @@
         </v-card>
         </v-flex>
         </v-layout>
-         <v-btn block color="primary" large dark @click.prevent="payment">PAGAMENTO</v-btn>
+        <v-layout>
+        <v-flex sm6 v-if="!table">
+        <v-btn block color="primary" large dark @click.prevent="payment">PAGAMENTO</v-btn>
+         </v-flex>
+         <v-spacer></v-spacer>
+        <v-flex sm6 v-if="!table">
+        <v-btn block color="primary" large dark @click.prevent="payment">PAGAMENTO</v-btn>
+         </v-flex>
+        <v-flex sm12 v-if="table">
+            <v-btn block color="primary" large dark @click.prevent="payment">PAGAMENTO</v-btn>
+         </v-flex>
+        </v-layout>
     </v-flex>
 </v-layout>
 <v-layout row justify-center>
@@ -157,7 +179,9 @@
     data: () => ({
       result: [
         {text: 'Total', value: 0},
-        {text: 'Desconto', value: 0}
+        {text: 'Desconto', value: 0},
+        {text: 'Faltam', value: 0},
+        {text: 'Troco', value: 0}
       ],
       item: {
         id: '',
@@ -189,10 +213,10 @@
         this.result[1].value = 0
         this.$store.pdv.state.products.forEach(element => {
           this.result[1].value += element.discount
-        })
-        this.$store.pdv.state.products.forEach(element => {
           this.result[0].value += element.value
         })
+        this.result[2].value = this.result[1].value
+        this.result[3].value = 0
         return this.result
       },
       items () {
@@ -263,6 +287,8 @@
         this.search = ''
       },
       payment () {
+        this.result[2].value = this.result[1].value
+        this.result[3].value = 0
         this.table = !this.table
       }
     }

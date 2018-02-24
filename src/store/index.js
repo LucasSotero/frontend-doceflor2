@@ -5,6 +5,7 @@ import client from './modules/client'
 import pdv from './modules/pdv'
 import sale from './modules/sale'
 import report from './modules/report'
+import pay from './modules/pay'
 
 window.axios = require('axios')
 window.axios.defaults.baseURL = 'http://localhost:9000'
@@ -16,5 +17,6 @@ export default {
   client: new Vuex.Store(client),
   product: new Vuex.Store(product),
   pdv: new Vuex.Store(pdv),
-  sale: new Vuex.Store(sale)
+  sale: new Vuex.Store(sale),
+  pay: new Vuex.Store(pay)
 }
