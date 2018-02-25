@@ -4,10 +4,10 @@
   <v-flex xs12 sm12>
     <v-card>
       <v-container grid-list-xl fluid>
-        <v-layout wrap row v-for="(t, index) in falt" :key="index">
+        <v-layout wrap row v-for="(pay, index) in payment" :key="index">
           <v-flex xs12 sm4 >
         <v-select
-          v-model="t.text"
+          v-model="pay.text"
           :items="['Dinheiro', 'Cartão', 'Fiado']"
           overflow
           label="Método"
@@ -16,7 +16,7 @@
           </v-flex>
           <v-flex xs12 sm4 offset-sm1 >
             <v-text-field
-              v-model="t.value"
+              v-model="pay.value"
               class="input-group--focused"
               label="Valor"
               :error-messages="errors.collect('teste')"
@@ -25,7 +25,6 @@
               type="number"
               data-vv-name=""
               required
-              @input="tot"
             ></v-text-field>
           </v-flex>
           <v-flex sm2 v-if="index==0">
@@ -37,7 +36,7 @@
             <v-btn fab dark small color="teal" @click="addMethod">
               <v-icon>add</v-icon>
             </v-btn>
-            <v-btn fab dark small color="red" @click="delMethod(t)">
+            <v-btn fab dark small color="red" @click="delMethod(pay)">
               <v-icon>delete</v-icon>
             </v-btn>
           </v-flex>
@@ -57,39 +56,24 @@ export default {
   components: {keyboard},
   data () {
     return {
-      test: 1,
-      pay: {text: '', value: 0},
-      falt: [{text: '', value: 0}]
     }
   },
-  mounted () {
-    this.$store.pay.commit('insert', pay)
+  created () {
+    if (!this.$store.pay.state.payment.length) {
+      this.$store.pay.commit('insert', {text: '', value: 0})
+    }
   },
   computed: {
-    total () {
-      return this.falt
+    payment () {
+      return this.$store.pay.state.payment
     }
   },
   methods: {
     addMethod () {
-      this.falt.push({text: '', value: 0})
+      this.$store.pay.commit('insert', {text: '', value: 0})
     },
     delMethod (data) {
-      this.falt.splice(data, 1)
-      this.tot()
-    },
-    tot () {
-      let a = 0
-      this.$parent.result[2].value = 0
-      this.$parent.result[3].value = 0
-      this.falt.forEach(element => {
-        a += parseInt(element.value)
-      })
-      this.$parent.result[2].value = this.$parent.result[1].value - a
-      if (this.$parent.result[2].value < 0) {
-        this.$parent.result[3].value = this.$parent.result[2].value / -1
-        this.$parent.result[2].value = 0
-      }
+      this.$store.pay.commit('removeOne', data)
     }
   }
 }

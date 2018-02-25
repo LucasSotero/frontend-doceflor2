@@ -25,6 +25,7 @@ export default new Router({
   routes: [
     {
       path: '/',
+      name: 'pdv',
       component: pdv
     },
     {

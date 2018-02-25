@@ -13,10 +13,10 @@ window.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-url
 
 Vue.use(Vuex)
 export default {
+  pay: new Vuex.Store(pay),
   report: new Vuex.Store(report),
   client: new Vuex.Store(client),
   product: new Vuex.Store(product),
   pdv: new Vuex.Store(pdv),
-  sale: new Vuex.Store(sale),
-  pay: new Vuex.Store(pay)
+  sale: new Vuex.Store(sale)
 }

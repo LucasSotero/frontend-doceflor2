@@ -52,7 +52,51 @@
         <v-btn color="primary" @click="initialize">Reset</v-btn>
       </template>
     </v-data-table>
-    <pay v-else></pay>
+<v-layout v-else row wrap>
+  <v-flex xs12 sm12>
+    <v-card>
+      <v-container grid-list-xl fluid>
+        <v-layout wrap row v-for="(pay, index) in payment" :key="index">
+          <v-flex xs12 sm4 >
+        <v-select
+          v-model="pay.method"
+          :items="['Dinheiro', 'Cartão', 'Fiado']"
+          :error-messages="errors.collect('method')"
+          v-validate="'required'"
+          overflow
+          label="Método"
+          target="#dropdown-example"
+        ></v-select>
+          </v-flex>
+          <v-flex xs12 sm4 offset-sm1 >
+            <v-text-field
+              v-model="pay.value"
+              class="input-group--focused"
+              label="Valor"
+              prefix="$"
+              type="number"
+              data-vv-name=""
+              required
+            ></v-text-field>
+          </v-flex>
+          <v-flex sm2 v-if="index==0">
+            <v-btn fab dark small color="teal" @click="addMethod">
+              <v-icon>add</v-icon>
+            </v-btn>
+          </v-flex>
+          <v-flex sm3 v-else>
+            <v-btn fab dark small color="teal" @click="addMethod">
+              <v-icon>add</v-icon>
+            </v-btn>
+            <v-btn fab dark small color="red" @click="delMethod(pay)">
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </v-flex>
+        </v-layout>
+      </v-container>
+      </v-card>
+    </v-flex>
+</v-layout>
     </v-flex>
     <v-flex xs6 sm3>
       <v-layout row>
@@ -75,14 +119,14 @@
         </v-layout>
         <v-layout>
         <v-flex sm6 v-if="!table">
-        <v-btn block color="primary" large dark @click.prevent="payment">PAGAMENTO</v-btn>
+        <v-btn block color="primary" large dark @click.prevent="paymen">PAGAMENTO</v-btn>
          </v-flex>
          <v-spacer></v-spacer>
         <v-flex sm6 v-if="!table">
-        <v-btn block color="primary" large dark @click.prevent="payment">PAGAMENTO</v-btn>
+        <v-btn block color="primary" large dark @click.prevent="save">PAGAMENTO</v-btn>
          </v-flex>
         <v-flex sm12 v-if="table">
-            <v-btn block color="primary" large dark @click.prevent="payment">PAGAMENTO</v-btn>
+            <v-btn block color="primary" large dark @click.prevent="paymen">PAGAMENTO</v-btn>
          </v-flex>
         </v-layout>
     </v-flex>
@@ -90,7 +134,7 @@
 <v-layout row justify-center>
     <v-dialog v-model="dialog3" persistent max-width="500">
 <v-card>
-    <v-form @submit.prevent="submit" ref="form">
+    <v-form @submit.prevent="submit2" ref="form">
       <v-card-title primary-title>
         <div class="headline">Desconto</div>
         <v-spacer></v-spacer>
@@ -176,7 +220,11 @@
   import pay from '@/components/pdv/pay'
   export default {
     components: {pay},
+    $_veeValidate: {
+      validator: 'new'
+    },
     data: () => ({
+      sale: {},
       result: [
         {text: 'Total', value: 0},
         {text: 'Desconto', value: 0},
@@ -204,19 +252,33 @@
         { text: 'Desconto', value: 'Discount', sortable: false, align: 'center' },
         { text: 'Ações', value: 'actions', sortable: false, align: 'right' },
         { text: '', value: '', sortable: false, align: 'right' }
-      ]
+      ],
+      dictionary: {
+        custom: {
+          value: {
+            required: () => 'O campo método de pagamento não pode estar vazio'
+          }
+        }
+      }
     }),
 
     computed: {
       items2 () {
         this.result[0].value = 0
         this.result[1].value = 0
+        this.result[3].value = 0
         this.$store.pdv.state.products.forEach(element => {
           this.result[1].value += element.discount
           this.result[0].value += element.value
         })
         this.result[2].value = this.result[1].value
-        this.result[3].value = 0
+        this.$store.pay.state.payment.forEach(element => {
+          this.result[2].value -= element.value
+        })
+        if (this.result[2].value < 0) {
+          this.result[3].value = this.result[2].value / -1
+          this.result[2].value = 0
+        }
         return this.result
       },
       items () {
@@ -224,6 +286,9 @@
       },
       productDiscountTotal () {
         return this.productDiscount.value - (this.productDiscount.value * (this.productDiscount.percent / 100))
+      },
+      payment () {
+        return this.$store.pay.state.payment
       }
     },
 
@@ -233,7 +298,10 @@
 
     methods: {
       initialize () {
-        return this.$store.product.dispatch('getAll')
+        this.$store.product.dispatch('getAll')
+        if (!this.$store.pay.state.payment.length) {
+          this.$store.pay.commit('insert', {method: '', value: 0})
+        }
       },
 
       dicountItem (item, index) {
@@ -267,7 +335,7 @@
         }
       },
 
-      submit () {
+      submit2 () {
         let data = {
           index: this.productDiscount.index,
           discount: this.productDiscount.total
@@ -286,10 +354,25 @@
         this.$store.pdv.dispatch('getOne', this.search)
         this.search = ''
       },
-      payment () {
+      paymen () {
         this.result[2].value = this.result[1].value
         this.result[3].value = 0
         this.table = !this.table
+      },
+      addMethod () {
+        this.$store.pay.commit('insert', {method: 'Dinheiro', value: 0})
+      },
+      delMethod (data) {
+        this.$store.pay.commit('removeOne', data)
+      },
+      save () {
+        this.sale.products = this.items
+        this.sale.pays = this.payment
+        console.log(this.sale)
+        this.$store.sale.dispatch('postsale', this.sale).then((res) => {
+          console.log('RES' + res)
+        })
+        this.$validator.validateAll()
       }
     }
   }

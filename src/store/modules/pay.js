@@ -11,6 +11,9 @@ export default {
     },
     updateValue (state, data) {
       state.payment[data.key] = data.data
+    },
+    reset (state, data) {
+      state.payment = []
     }
   }
 }

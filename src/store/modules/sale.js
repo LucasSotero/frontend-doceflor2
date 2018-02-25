@@ -14,13 +14,13 @@ export default {
   actions: {
     remove (context, id) {
       window.axios.delete('/sales/' + id).then(Response => {
-        Response.data = Response.data.data.map(element => [element._id, element.code, element.client, element.date, element.value])
+        Response.data = Response.data.data.map(element => ({ id: element._id, code: element.code, client: element.client, date: element.date, value: element.value }))
         context.commit('insertAll', Response.data)
       })
     },
     getAll (context) {
       window.axios.get('/sales').then(Response => {
-        Response.data = Response.data.data.map(element => [element._id, element.code, element.client, element.date, element.value])
+        Response.data = Response.data.data.map(element => ({ id: element._id, code: element.code, client: element.client, date: element.date, value: element.value }))
         context.commit('insertAll', Response.data)
       })
     },
@@ -29,7 +29,7 @@ export default {
         let result = {
           id: Response.data.data._id,
           client: Response.data.data.client,
-          data: Response.data.data.data,
+          date: Response.data.data.data,
           discount: Response.data.data.discount,
           pays: Response.data.data.pays,
           products: Response.data.data.products
