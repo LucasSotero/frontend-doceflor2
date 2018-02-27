@@ -18,6 +18,7 @@ import ClientDetails from '@/components/client/details'
 
 import pdv from '@/components/pdv/pdv'
 import pay from '@/components/pdv/pay'
+import report from '@/components/report/report'
 
 Vue.use(Router)
 
@@ -27,6 +28,11 @@ export default new Router({
       path: '/',
       name: 'pdv',
       component: pdv
+    },
+    {
+      path: '/reports',
+      name: 'reports.show',
+      component: report
     },
     {
       path: '/pay',
