@@ -1,38 +1,131 @@
 <template>
-  <div>
-    <v-tabs
-      v-model="active"
-      color="cyan"
-      dark
-      slider-color="yellow"
-    >
-      <v-tab
-        v-for="n in headers"
-        :key="n"
-        ripple
+  <v-tabs fixed-tabs>
+    <v-tab v-for="n in header" :key="n">
+      {{n}}
+    </v-tab>
+    <v-tab-item>
+      
+    </v-tab-item>
+    <v-tab-item>
+      <v-card-title>
+        <v-spacer></v-spacer>
+        <v-text-field
+          append-icon="search"
+          label="Pesquise..."
+          single-line
+          hide-details
+          v-model="search"
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table
+        :headers="headers"
+        :items="sales"
+        hide-actions
+        class="elevation-1"
+        :search="search"
       >
-        {{ n }}
-      </v-tab>
-      <v-tab-item
-        v-for="n in 3"
-        :key="n"
+        <template slot="items" slot-scope="props">
+          <td class="text-md-center">{{ props.item.barCode }}</td>
+          <td class="text-xs-center">{{ props.item.name }}</td>
+          <td class="text-xs-center">{{ props.item.value }}</td>
+        </template>
+        <template slot="no-data">
+          <v-btn color="primary"></v-btn>
+        </template>
+      </v-data-table>
+    </v-tab-item>
+    <v-tab-item>
+      <v-card-title>
+        <v-spacer></v-spacer>
+        <v-text-field
+          append-icon="search"
+          label="Pesquise..."
+          single-line
+          hide-details
+          v-model="search"
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table
+        :headers="headers"
+        :items="products"
+        hide-actions
+        class="elevation-1"
+        :search="search"
       >
-        <v-card flat>
-          <v-card-text>{{ text }}</v-card-text>
-        </v-card>
-      </v-tab-item>
-    </v-tabs>
-  </div>
+        <template slot="items" slot-scope="props">
+          <td class="text-md-center">{{ props.item.barCode }}</td>
+          <td class="text-xs-center">{{ props.item.name }}</td>
+          <td class="text-xs-center">{{ props.item.value }}</td>
+        </template>
+        <template slot="no-data">
+          <v-btn color="primary"></v-btn>
+        </template>
+      </v-data-table>
+    </v-tab-item>
+    <v-tab-item>
+      <v-card-title>
+        <v-spacer></v-spacer>
+        <v-text-field
+          append-icon="search"
+          label="Pesquise..."
+          single-line
+          hide-details
+          v-model="search"
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table
+        :headers="headers"
+        :items="clients"
+        hide-actions
+        class="elevation-1"
+        :search="search"
+      >
+        <template slot="items" slot-scope="props">
+          <td class="text-md-center">{{ props.item.barCode }}</td>
+          <td class="text-xs-center">{{ props.item.name }}</td>
+          <td class="text-xs-center">{{ props.item.value }}</td>
+        </template>
+        <template slot="no-data">
+          <v-btn color="primary"></v-btn>
+        </template>
+      </v-data-table>
+    </v-tab-item>
+  </v-tabs>
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        headers: ['Vendas', 'Clientes', 'Produtos'],
-        active: null,
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-      }
+export default {
+  data () {
+    return {
+      search: '',
+      headers: [
+        { text: 'Código', align: 'left', value: 'barCode' },
+        { text: 'Descrição', value: 'name' },
+        { text: 'Valor', value: 'value' }
+      ],
+      header: ['Vendas', 'Produtos', 'Clientes']
+    }
+  },
+  computed: {
+    products () {
+      return this.$store.product.state.products
+    },
+    clients () {
+      return this.$store.client.state.clients
+    },
+    sales () {
+      return this.$store.sale.state.sales
+    }
+  },
+  mounted () {
+    this.$store.product.dispatch('getAll')
+  },
+
+  methods: {
+    initialize () {
+      return this.$store.product.dispatch('getAll')
     }
   }
+}
 </script>
+
