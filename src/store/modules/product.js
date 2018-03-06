@@ -12,6 +12,16 @@ export default {
     }
   },
   actions: {
+    getAllReport (context) {
+      window.axios.get('/products').then(Response => {
+        let res = []
+        Response.data.data.forEach(element => {
+          res.push(element.name)
+        })
+        context.commit('insertAll', res)
+      })
+    },
+
     remove (context, id) {
       window.axios.delete('/products/' + id).then(Response => {
         Response.data = Response.data.data.map(element => ({ id: element._id, barCode: element.barCode, name: element.name, value: element.value }))

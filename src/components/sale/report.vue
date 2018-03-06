@@ -44,17 +44,17 @@
     <v-spacer></v-spacer>
     <v-flex md3>
       <v-select
-        v-model="select"
+        v-model="form.methods"
         label="Método"
         chips
         tags
-        :items="items2"
+        :items="methods"
       ></v-select>
     </v-flex>
     <v-spacer></v-spacer>
     <v-flex md3>
       <v-select
-        v-model="select"
+        v-model="form.products"
         label="Produtos"
         chips
         tags
@@ -98,7 +98,10 @@
       tablet: false,
       form: {
         start: undefined,
-        end: undefined
+        end: undefined,
+        methods: undefined,
+        products: undefined,
+        clients: undefined
       },
       select: [],
       methods: [
@@ -113,7 +116,7 @@
       }
     },
     mounted () {
-      return this.$store.product.dispatch('getAll')
+      return this.$store.product.dispatch('getAllReport')
     },
     methods: {
       table () {
