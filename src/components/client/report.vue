@@ -45,12 +45,13 @@
     <v-flex md3>
       <v-select
         v-model="form.methods"
-        label="Método"
+        label="Cliente"
         chips
         tags
         :items="methods"
       ></v-select>
     </v-flex>
+    <v-spacer></v-spacer>
     <v-spacer></v-spacer>
     <v-flex md2 >
       <v-btn color="primary" @click="table()">Buscar</v-btn>

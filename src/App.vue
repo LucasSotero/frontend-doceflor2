@@ -95,7 +95,7 @@
           items: [
             { title: 'Novo cliente', router: 'clients.insert' },
             { title: 'Clientes', router: 'clients.show' },
-            { title: 'Relatórios', router: 'clients.show' }
+            { title: 'Relatórios', router: 'clients.report' }
           ]
         },
         {
@@ -104,7 +104,7 @@
           items: [
             { title: 'Novo Produto', router: 'products.insert' },
             { title: 'Produtos', router: 'products.show' },
-            { title: 'Relatórios', router: 'products.show' }
+            { title: 'Relatórios', router: 'products.report' }
           ]
         }
       ],

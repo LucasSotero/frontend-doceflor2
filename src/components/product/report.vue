@@ -44,11 +44,11 @@
     <v-spacer></v-spacer>
     <v-flex md3>
       <v-select
-        v-model="form.methods"
-        label="Método"
+        v-model="form.products"
+        label="Produtos"
         chips
         tags
-        :items="methods"
+        :items="items"
       ></v-select>
     </v-flex>
     <v-spacer></v-spacer>
