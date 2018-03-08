@@ -74,6 +74,12 @@ export default {
         }
         context.commit('updateOne', result)
       })
+    },
+    report (context, data) {
+      window.axios.post('/sales/report/', data).then(Response => {
+        Response.data = Response.data.data.map(element => ({ method: element._id, value: element.value }))
+        context.commit('insertAll', Response.data)
+      })
     }
   }
 }

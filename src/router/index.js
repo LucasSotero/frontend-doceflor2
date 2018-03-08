@@ -5,6 +5,7 @@ import ProductShow from '@/components/product/show'
 import ProductEdit from '@/components/product/edit'
 import ProductInsert from '@/components/product/insert'
 import ProductDetails from '@/components/product/details'
+import ProductReport from '@/components/product/report'
 
 import SaleShow from '@/components/sale/show'
 import SaleEdit from '@/components/sale/edit'
@@ -16,6 +17,7 @@ import ClientShow from '@/components/client/show'
 import ClientEdit from '@/components/client/edit'
 import ClientInsert from '@/components/client/insert'
 import ClientDetails from '@/components/client/details'
+import ClientReport from '@/components/client/report'
 
 import pdv from '@/components/pdv/pdv'
 import pay from '@/components/pdv/pay'
@@ -25,6 +27,16 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/clients/report',
+      name: 'clients.report',
+      component: ClientReport
+    },
+    {
+      path: '/products/report',
+      name: 'products.report',
+      component: ProductReport
+    },
     {
       path: '/sales/report',
       name: 'sales.report',
