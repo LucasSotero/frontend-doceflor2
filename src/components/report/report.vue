@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <template>
   <v-tabs fixed-tabs>
     <v-tab v-for="n in header" :key="n">
@@ -129,3 +130,5 @@ export default {
 }
 </script>
 
+=======
+>>>>>>> 5e8999220ef87265a886c3f0e5d756a608aa4c47

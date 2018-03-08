@@ -10,6 +10,7 @@ import SaleShow from '@/components/sale/show'
 import SaleEdit from '@/components/sale/edit'
 import SaleInsert from '@/components/sale/insert'
 import SaleDetails from '@/components/sale/details'
+import SaleReport from '@/components/sale/report'
 
 import ClientShow from '@/components/client/show'
 import ClientEdit from '@/components/client/edit'
@@ -24,6 +25,11 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/sales/report',
+      name: 'sales.report',
+      component: SaleReport
+    },
     {
       path: '/',
       name: 'pdv',

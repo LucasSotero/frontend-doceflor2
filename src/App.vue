@@ -4,21 +4,30 @@
       fixed
       clipped
       v-model="drawer"
-      class="pink lighten-4"
       app
-      dark
     >
-      <v-list dense>
-        <v-list-tile v-for="item in items" :key="item.text" @click="redirect(item.action)">
-          <v-list-tile-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>
-              {{ item.title }}
-            </v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+      <v-list>
+             <v-list-group
+              v-model="item.active"
+              v-for="item in items"
+              :key="item.title"
+              :prepend-icon="item.action"
+              no-action
+            >
+              <v-list-tile slot="activator">
+                <v-list-tile-content>
+                  <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile v-for="subItem in item.items" :key="subItem.title" @click="redirect(subItem.router)">
+                <v-list-tile-content>
+                  <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
+                </v-list-tile-content>
+                <v-list-tile-action>
+                  <v-icon>{{ subItem.action }}</v-icon>
+                </v-list-tile-action>
+              </v-list-tile>
+            </v-list-group>
       </v-list>
     </v-navigation-drawer>
     <v-toolbar
@@ -71,10 +80,33 @@
       drawer: false,
       fixed: false,
       items: [
-        { icon: 'shopping_cart', title: 'Vendas', action: 'sales.show' },
-        { icon: 'person', title: 'Clientes', action: 'clients.show' },
-        { icon: 'shopping_basket', title: 'Produtos', action: 'products.show' },
-        { icon: 'pie_chart', title: 'Relatórios', action: 'reports.show' }
+        {
+          action: 'shopping_cart',
+          title: 'Vendas',
+          items: [
+            { title: 'Nova Venda', router: 'sales.insert' },
+            { title: 'Vendas', router: 'sales.show' },
+            { title: 'Relatórios', router: 'sales.report' }
+          ]
+        },
+        {
+          action: 'person',
+          title: 'Clientes',
+          items: [
+            { title: 'Novo cliente', router: 'clients.insert' },
+            { title: 'Clientes', router: 'clients.show' },
+            { title: 'Relatórios', router: 'clients.show' }
+          ]
+        },
+        {
+          action: 'shopping_basket',
+          title: 'Produtos',
+          items: [
+            { title: 'Novo Produto', router: 'products.insert' },
+            { title: 'Produtos', router: 'products.show' },
+            { title: 'Relatórios', router: 'products.show' }
+          ]
+        }
       ],
       icons: ['fa-facebook', 'fa-twitter', 'fa-google-plus', 'fa-linkedin', 'fa-instagram']
     }),
