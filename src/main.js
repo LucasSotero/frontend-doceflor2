@@ -7,9 +7,11 @@ import store from './store'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import VeeValidate from 'vee-validate'
+import JsonExcel from 'vue-json-excel'
 
 Vue.use(VeeValidate)
 Vue.use(Vuetify)
+Vue.component('downloadExcel', JsonExcel)
 
 Vue.config.productionTip = false
 

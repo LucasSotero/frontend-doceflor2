@@ -54,7 +54,14 @@
     <v-spacer></v-spacer>
     <v-flex md2 >
       <v-btn color="primary" @click="table()">Buscar</v-btn>
-      <v-btn color="success" v-if="tablet">Excel</v-btn>
+      <download-excel v-if="tablet"
+        class= "btn success"
+        :data="items"
+        :fields="{'Método':'method','valor':'value'}"
+        :meta="[{'key':'charset', 'value': 'utf-8'}]"
+        name="Relatorio.xls"
+      >excel
+      </download-excel>
     </v-flex>
   </v-layout>
   </v-card-title>
@@ -68,8 +75,8 @@
     class="elevation-1"
   >
     <template slot="items" slot-scope="props">
-      <td>{{ props.item.name }}</td>
-      <td class="text-xs-right">{{ props.item.name }}</td>
+      <td class="text-md-center">{{ props.item.method }}</td>
+      <td class="text-md-center">{{ props.item.value }}</td>
     </template>
   </v-data-table>
     </v-flex>
@@ -81,8 +88,7 @@
   export default {
     data: () => ({
       headers: [
-        { text: 'Método', align: 'left', value: 'barCode' },
-        { text: 'Produto', value: 'name' },
+        { text: 'Método', align: 'left', value: 'method' },
         { text: 'valor', value: 'value' }
       ],
       tablet: false,
@@ -102,15 +108,12 @@
     }),
     computed: {
       items () {
-        return this.$store.product.state.products
+        return this.$store.sale.state.sales
       }
-    },
-    mounted () {
-      return this.$store.product.dispatch('getAllReport')
     },
     methods: {
       table () {
-        this.tablet = !this.tablet
+        this.tablet = true
         this.$store.sale.dispatch('report', this.form)
       }
     }

@@ -77,7 +77,7 @@ export default {
     },
     report (context, data) {
       window.axios.post('/sales/report/', data).then(Response => {
-        Response.data = Response.data.data.map(element => ({ id: element._id, code: element.code, client: element.client, date: element.date, value: element.value }))
+        Response.data = Response.data.data.map(element => ({ method: element._id, value: element.value }))
         context.commit('insertAll', Response.data)
       })
     }
