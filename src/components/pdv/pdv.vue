@@ -119,14 +119,14 @@
         </v-layout>
         <v-layout>
         <v-flex sm6 v-if="!table">
-        <v-btn block color="primary" large dark @click.prevent="paymen">PAGAMENTO</v-btn>
+        <v-btn block color="success" large dark @click.prevent="paymen">Voltar</v-btn>
          </v-flex>
          <v-spacer></v-spacer>
         <v-flex sm6 v-if="!table">
-        <v-btn block color="primary" large dark @click.prevent="save">PAGAMENTO</v-btn>
+        <v-btn block color="primary" large dark @click.prevent="save">Finalizar</v-btn>
          </v-flex>
         <v-flex sm12 v-if="table">
-            <v-btn block color="primary" large dark @click.prevent="paymen">PAGAMENTO</v-btn>
+            <v-btn block color="primary" large dark @click.prevent="paymen">Pagamento</v-btn>
          </v-flex>
         </v-layout>
     </v-flex>
@@ -232,7 +232,7 @@
         {text: 'Troco', value: 0}
       ],
       item: {
-        id: '',
+        _id: '',
         name: ''
       },
       table: true,

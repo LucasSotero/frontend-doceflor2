@@ -97,11 +97,10 @@
       :search="search"
     >
       <template slot="items" slot-scope="props">
-        <td class="text-md-center">{{ props.item.code }}</td>
-        <td class="text-md-center">{{props.item.name}}</td>
+        <td class="text-md-center">{{ props.item._id.barCode }}</td>
+        <td class="text-md-center">{{props.item._id.name}}</td>
         <td class="text-xs-center">{{ props.item.value }}</td>
         <td class="text-xs-center">{{ props.item.discount }}</td>
-        <td class="text-xs-center">{{ props.item.io }}</td>
       </template>
       <template slot="no-data">
         <v-btn color="primary" @click="initialize">Reset</v-btn>
