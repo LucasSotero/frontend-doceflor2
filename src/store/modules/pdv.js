@@ -15,12 +15,15 @@ export default {
     },
     addDiscount (state, data) {
       state.products[data.index].discount = data.discount
+    },
+    reset (state) {
+      state.products = []
     }
   },
   actions: {
     getOne (context, data) {
       window.axios.get('/products/search/' + data).then(Response => {
-        Response.data = ({id: Response.data.data._id, code: Response.data.data.code, name: Response.data.data.name, discount: Response.data.data.value, value: Response.data.data.value})
+        Response.data = ({_id: Response.data.data._id, code: Response.data.data.code, name: Response.data.data.name, discount: Response.data.data.value, value: Response.data.data.value})
         context.commit('updateOne', Response.data)
       })
     }

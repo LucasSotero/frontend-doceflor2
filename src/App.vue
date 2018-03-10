@@ -64,7 +64,7 @@
           action: 'shopping_cart',
           title: 'Vendas',
           items: [
-            { title: 'Nova Venda', router: 'sales.insert' },
+            { title: 'Nova Venda', router: 'pdv' },
             { title: 'Vendas', router: 'sales.show' },
             { title: 'Relatórios', router: 'sales.report' }
           ]

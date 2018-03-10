@@ -8,7 +8,7 @@ import report from './modules/report'
 import pay from './modules/pay'
 
 window.axios = require('axios')
-window.axios.defaults.baseURL = 'http://localhost:9000'
+window.axios.defaults.baseURL = 'https://api-doce-flor.herokuapp.com'
 window.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
 Vue.use(Vuex)
