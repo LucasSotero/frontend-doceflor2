@@ -9,11 +9,11 @@
   <v-card>
     <v-form @submit.prevent="submit" ref="form">
       <v-card-title primary-title>
-        <div class="headline">Alterar Estoque</div>
+        <div class="headline">Inserir Transação</div>
       </v-card-title>   
       <v-container grid-list-xl fluid>
         <v-layout wrap justify-space-around>
-          <v-flex xs12 sm8>
+          <v-flex xs12 sm7>
           <v-menu
         lazy
         :close-on-content-click="true">
@@ -33,17 +33,19 @@
           </v-flex>
           <v-flex xs12 sm4>              
               <span  v-if="form.io">
-                Entrada
-                <v-btn icon class="mx-0" @click="type">
-                  <v-icon x-large color="blue">keyboard_arrow_down</v-icon>
-                </v-btn>                
+                Recebimento               
               </span>
               <span  v-if="!form.io">
-                Saida
-                <v-btn icon class="mx-0" @click="type">
-                  <v-icon x-large color="red" >keyboard_arrow_up</v-icon>
-                </v-btn>
+                Pagamento
               </span>
+          </v-flex>
+          <v-flex md1>
+              <v-btn icon v-if="form.io" class="mx-0" @click="type">
+                <v-icon x-large color="blue">keyboard_arrow_down</v-icon>
+              </v-btn>
+              <v-btn icon v-else class="mx-0" @click="type">
+                  <v-icon x-large color="red" >keyboard_arrow_up</v-icon>
+              </v-btn>
           </v-flex>
           <v-flex xs12 sm6>
         <v-select
@@ -139,7 +141,7 @@
           date: undefined,
           method: '',
           value: null,
-          io: false
+          io: true
         },
         item: undefined,
         dialog: false,

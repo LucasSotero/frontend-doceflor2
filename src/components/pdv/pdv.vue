@@ -129,7 +129,7 @@
          </v-flex>
          <v-spacer></v-spacer>
         <v-flex sm6 v-if="!table">
-        <v-btn block color="primary" :disabled="!isValid" large dark @click.prevent="save">Finalizar</v-btn>
+          <v-btn block depressed large :disabled="!isValid" color="primary" @click.prevent="save">Finalizar</v-btn>
          </v-flex>
         <v-flex sm12 v-if="table">
             <v-btn block color="primary" large dark @click.prevent="paymen">Pagamento</v-btn>
@@ -306,6 +306,12 @@
       },
       clients () {
         return this.$store.client.state.clients
+      },
+      isValid () {
+        if (this.result[2].value === 0) {
+          return true
+        }
+        return false
       }
     },
 
@@ -401,12 +407,6 @@
           this.sale.client = undefined
         }
         this.initialize()
-      },
-      isValid () {
-        if (this.result[2].value === 0) {
-          return true
-        }
-        return false
       }
     }
   }

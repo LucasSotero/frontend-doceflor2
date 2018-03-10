@@ -22,7 +22,8 @@
       <template slot="items" slot-scope="props">
         <td class="text-md-center">{{ props.item.date }}</td>
         <td class="text-md-center">{{ props.item.code }}</td>
-        <td class="text-xs-center">{{ props.item.client }}</td>
+        <td class="text-xs-center" v-if="props.item.client">{{ props.item.client }}</td>
+        <td class="text-xs-center" v-if="!props.item.client">-</td>
         <td class="text-xs-center">{{ props.item.value }}</td>
         <td class="justify-center layout px-0">
           <v-btn icon class="mx-0" @click="viewItem(props.item)">
