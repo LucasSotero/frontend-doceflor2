@@ -403,7 +403,7 @@
         this.initialize()
       },
       isValid () {
-        if (this.result[2].value = 0) {
+        if (this.result[2].value === 0) {
           return true
         }
         return false
