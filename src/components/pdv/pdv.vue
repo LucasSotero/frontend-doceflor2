@@ -16,15 +16,21 @@
           </v-flex>
           <v-spacer></v-spacer>
         <v-flex  sm4>
-        <v-text-field
+          <v-select
+          :items="clients"
+          :filter="customFilter"
+          v-model="sale.client"
+          item-value="id"
+          item-text="name"
           label="Cliente"
-          single-line
-          hide-details
-          v-model="search"
-          @keyup.enter="addProduct"
-        ></v-text-field>
+          autocomplete
+            ></v-select>
           </v-flex>
-
+        <v-flex md1>
+          <v-btn fab dark small color="teal" @click="RedirectClient">
+              <v-icon>add</v-icon>
+            </v-btn>
+        </v-flex>
         </v-card-title>
       </v-card>
     </v-flex>
@@ -224,6 +230,14 @@
       validator: 'new'
     },
     data: () => ({
+      customFilter (item, queryText, itemText) {
+        const hasValue = val => val != null ? val : ''
+        const text = hasValue(item.name)
+        const query = hasValue(queryText)
+        return text.toString()
+          .toLowerCase()
+          .indexOf(query.toString().toLowerCase()) > -1
+      },
       sale: {},
       result: [
         {text: 'Total', value: 0},
@@ -289,6 +303,9 @@
       },
       payment () {
         return this.$store.pay.state.payment
+      },
+      clients () {
+        return this.$store.client.state.clients
       }
     },
 
@@ -297,7 +314,11 @@
     },
 
     methods: {
+      RedirectClient () {
+        this.$router.push({name: 'clients.insert'})
+      },
       initialize () {
+        this.$store.client.dispatch('getAll')
         this.$store.product.dispatch('getAll')
         if (!this.$store.pay.state.payment.length) {
           this.$store.pay.commit('insert', {method: '', value: 0})
@@ -373,6 +394,13 @@
           console.log('RES' + res)
         })
         this.$validator.validateAll()
+        this.$store.pdv.commit('reset')
+        this.table = !this.table
+        this.$store.pay.commit('reset')
+        if (this.sale.client) {
+          this.sale.client = undefined
+        }
+        this.initialize()
       }
     }
   }

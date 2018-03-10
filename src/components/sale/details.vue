@@ -4,7 +4,7 @@
     <v-card-title>
       <div class="headline">Venda {{sale.date}}</div>
       <v-spacer></v-spacer>
-      <div class="headline">Cliente: {{sale.client}}</div>
+      <span v-if="sale.client"><div class="headline">Cliente: {{sale.client.name}}</div></span>
     </v-card-title>
     <v-layout row justify-center>
     <v-dialog v-model="dialog" persistent max-width="450">
@@ -107,11 +107,12 @@
       </template>
     </v-data-table>
     </v-flex>
-    <v-flex xs12 sm6>
+    <v-flex xs12 sm9>
         <v-data-table
       :headers="headersPay"
       :items="sale.pays"
       hide-actions
+      class="elevation-1"
     >
       <template slot="items" slot-scope="props">
         <td class="text-md-center">{{ props.item.method }}</td>
@@ -122,7 +123,7 @@
       </template>
     </v-data-table>
     </v-flex>
-    <v-flex xs12 sm6>
+    <v-flex xs12 sm3>
         <v-card>
           <v-list one-line>
             <template v-for="(item) in item2">
@@ -131,7 +132,7 @@
                 <v-list-tile-title v-html="item.text"></v-list-tile-title>
               </v-list-tile-content>
               <v-list-tile-action>
-                <v-list-tile-title v-html="item.value"></v-list-tile-title>
+                <v-list-tile-title v-html="total"></v-list-tile-title>
               </v-list-tile-action>
               </v-list-tile>
             </template>
@@ -160,8 +161,7 @@
           io: true
         },
         item2: [
-          {text: 'Valor', value: undefined},
-          {text: 'Desconto', value: undefined}
+          { text: 'Total', value: undefined }
         ],
         item: undefined,
         dialog: false,
@@ -203,6 +203,13 @@
       },
       sale () {
         return this.$store.sale.state.sale
+      },
+      total () {
+        let t = 0
+        for (let v in this.sale.pays) {
+          t += parseFloat(this.sale.pays[v].value)
+        }
+        return t
       }
     },
 

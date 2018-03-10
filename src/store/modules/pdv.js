@@ -15,6 +15,9 @@ export default {
     },
     addDiscount (state, data) {
       state.products[data.index].discount = data.discount
+    },
+    reset (state) {
+      state.products = []
     }
   },
   actions: {
