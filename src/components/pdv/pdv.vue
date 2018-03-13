@@ -238,7 +238,11 @@
           .toLowerCase()
           .indexOf(query.toString().toLowerCase()) > -1
       },
-      sale: {},
+      sale: {
+        client: undefined,
+        products: undefined,
+        pays: undefined
+      },
       result: [
         {text: 'Total', value: 0},
         {text: 'Desconto', value: 0},
@@ -398,14 +402,12 @@
         console.log(this.sale)
         this.$store.sale.dispatch('postsale', this.sale).then((res) => {
           console.log('RES' + res)
+          this.client = undefined
         })
         this.$validator.validateAll()
         this.$store.pdv.commit('reset')
         this.table = !this.table
         this.$store.pay.commit('reset')
-        if (this.sale.client) {
-          this.sale.client = undefined
-        }
         this.initialize()
       }
     }
