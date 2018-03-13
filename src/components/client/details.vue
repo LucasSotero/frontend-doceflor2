@@ -3,6 +3,8 @@
   <div>
     <v-card-title>
       <v-btn color="success" dark slot="activator" class="mb-2"  @click="newItem">Novo</v-btn> 
+      <v-spacer></v-spacer>
+      <h2>Saldo total R$: {{total}}</h2>
     </v-card-title>
     <v-layout row justify-center>
     <v-dialog v-model="dialog" persistent max-width="450">
@@ -93,7 +95,8 @@
       <template slot="items" slot-scope="props">
         <td class="text-md-center">{{ props.item.date }}</td>
         <td class="text-xs-center">{{ props.item.value }}</td>
-        <td class="text-xs-center">{{ props.item.io }}</td>
+        <td class="text-xs-center" v-if="props.item.io === false">Venda</td>
+        <td class="text-xs-center" v-else>Pagamento</td>
         <td class="justify-center layout px-0">
           <v-btn icon class="mx-0" @click="deleteItem(props.item)">
             <v-icon color="pink">delete</v-icon>
@@ -177,6 +180,21 @@
       },
       items () {
         return this.$store.client.state.client
+      },
+      total () {
+        let a = this.items.credits
+        let t = 0
+        if (a) {
+          a.forEach(element => {
+            if (element.io === false) {
+              t -= element.value
+            }
+            if (element.io === true) {
+              t += element.value
+            }
+          })
+        }
+        return t
       }
     },
 

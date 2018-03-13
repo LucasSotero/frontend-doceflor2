@@ -391,15 +391,27 @@
         this.sale.pays = this.payment
         console.log(this.sale)
         this.$store.sale.dispatch('postsale', this.sale).then((res) => {
-          console.log('RES' + res)
+          console.log(res)
+          this.sale.pays.forEach(p => {
+            if (p.method === 'Fiado') {
+              let data = {
+                id: this.sale.client,
+                client: {
+                  io: false,
+                  value: p.value,
+                  date: '2010-10-10'
+                }
+              }
+              this.$store.client.dispatch('postDetails', data).then((response) => {
+                console.log(response)
+              })
+            }
+          })
         })
         this.$validator.validateAll()
         this.$store.pdv.commit('reset')
         this.table = !this.table
         this.$store.pay.commit('reset')
-        if (this.sale.client) {
-          this.sale.client = undefined
-        }
         this.initialize()
       }
     }
